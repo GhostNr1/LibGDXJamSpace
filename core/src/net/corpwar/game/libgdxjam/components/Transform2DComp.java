@@ -9,6 +9,16 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Transform2DComp extends Component implements Comparable<Transform2DComp>{
 
+    public Transform2DComp() {
+    }
+
+    public Transform2DComp(Vector2 position, int zValue, Vector2 scale, float rotation) {
+        this.position = position;
+        this.zValue = zValue;
+        this.scale = scale;
+        this.rotation = rotation;
+    }
+
     /**
      * Position in the world
      */

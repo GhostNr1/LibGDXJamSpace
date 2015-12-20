@@ -16,10 +16,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import net.corpwar.game.libgdxjam.components.TextureComp;
-import net.corpwar.game.libgdxjam.components.Transform2DComp;
+import net.corpwar.game.libgdxjam.components.*;
 import net.corpwar.game.libgdxjam.screens.GameScreen;
 import net.corpwar.game.libgdxjam.screens.SplashScreen;
+import net.corpwar.game.libgdxjam.systems.GameLoopSystemInvocationStrategy;
+import net.corpwar.game.libgdxjam.systems.InputSystem;
+import net.corpwar.game.libgdxjam.systems.PhysicsSystem;
 import net.corpwar.game.libgdxjam.systems.SortedRenderSystem;
 
 public class LibGDXJamSpace extends Game {
@@ -61,8 +63,9 @@ public class LibGDXJamSpace extends Game {
 		batch = new SpriteBatch();
 
 		WorldConfiguration config = new WorldConfigurationBuilder()
-				.with(new SortedRenderSystem(this))
+				.with(new SortedRenderSystem(this), new PhysicsSystem(20), new InputSystem(this, 20))
 				//.with(new RenderSys(), new EditingSys(), new ScriptSys())
+				.register(new GameLoopSystemInvocationStrategy(20))
 				.build();
 		arthWorld = new World(config);
 		setScreen(splashScreen);
@@ -86,21 +89,11 @@ public class LibGDXJamSpace extends Game {
 
 	private void testData() {
 		Entity defaultSprite = arthWorld.createEntity();
-		defaultSprite.edit().add(new Transform2DComp()).add(new TextureComp(new Sprite(new Texture("badlogic.jpg"))));
-		defaultSprite.getComponent(Transform2DComp.class).position = new Vector2(0,0);
-		defaultSprite.getComponent(Transform2DComp.class).zValue = 1;
-		defaultSprite.getComponent(Transform2DComp.class).scale = new Vector2(1,1);
-
-		defaultSprite = arthWorld.createEntity();
-		defaultSprite.edit().add(new Transform2DComp()).add(new TextureComp(new Sprite(new Texture("badlogic.jpg"))));
-		defaultSprite.getComponent(Transform2DComp.class).position = new Vector2(-25,100);
-		defaultSprite.getComponent(Transform2DComp.class).zValue = 0;
-		defaultSprite.getComponent(Transform2DComp.class).scale = new Vector2(1,1);
-
-		defaultSprite = arthWorld.createEntity();
-		defaultSprite.edit().add(new Transform2DComp()).add(new TextureComp(new Sprite(new Texture("badlogic.jpg"))));
-		defaultSprite.getComponent(Transform2DComp.class).position = new Vector2(200,200);
-		defaultSprite.getComponent(Transform2DComp.class).zValue = 2;
-		defaultSprite.getComponent(Transform2DComp.class).scale = new Vector2(1,1);
+		defaultSprite.edit()
+				.add(new Transform2DComp(new Vector2(0,0), 1, new Vector2(1,1), 0))
+				.add(new TextureComp(new Sprite(new Texture("badlogic.jpg"))))
+				.add(new PhysicComp())
+				.add(new InputComp())
+				.add(new ShipComp(100, 100, false));
 	}
 }
