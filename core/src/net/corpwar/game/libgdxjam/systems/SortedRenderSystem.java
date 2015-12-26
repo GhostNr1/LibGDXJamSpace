@@ -1,9 +1,9 @@
 package net.corpwar.game.libgdxjam.systems;
 
-import com.artemis.Aspect;
-import com.artemis.ComponentMapper;
-import com.artemis.Entity;
+import com.artemis.*;
 import net.corpwar.game.libgdxjam.LibGDXJamSpace;
+import net.corpwar.game.libgdxjam.components.InputComp;
+import net.corpwar.game.libgdxjam.components.ShipComp;
 import net.corpwar.game.libgdxjam.components.TextureComp;
 import net.corpwar.game.libgdxjam.components.Transform2DComp;
 
@@ -27,6 +27,16 @@ public class SortedRenderSystem extends SortedIteratingSystem {
 
     @Override
     protected void begin() {
+        if (jamSpace.camera != null) {
+            AspectSubscriptionManager asm = world.getAspectSubscriptionManager();
+            EntitySubscription es = asm.get(Aspect.all(InputComp.class, Transform2DComp.class));
+            if (es.getEntities().size() == 1) {
+                Transform2DComp t2d = world.getEntity(es.getEntities().get(0)).getComponent(Transform2DComp.class);
+                jamSpace.camera.position.set(t2d.position.x, t2d.position.y, 0);
+                jamSpace.camera.update();
+            }
+
+        }
         if (jamSpace.batch != null) {
             jamSpace.camera.update();
             jamSpace.batch.setProjectionMatrix(jamSpace.camera.combined);

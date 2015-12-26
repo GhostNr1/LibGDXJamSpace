@@ -51,7 +51,7 @@ public class InputSystem extends IteratingSystem implements LogicRenderMarker {
             physicComp.speed = shipComp.maxSpeed;
             float x = MathUtils.cosDeg(transform2DComp.rotation);
             float y = MathUtils.sinDeg(transform2DComp.rotation);
-            physicComp.velocity.set(x * physicComp.speed, y * physicComp.speed);
+            physicComp.velocity.set(x, y);
         } else {
             if (shipComp.directStop) {
                 physicComp.velocity.set(0,0);

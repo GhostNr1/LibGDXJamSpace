@@ -27,6 +27,6 @@ public class PhysicsSystem extends IteratingSystem implements LogicRenderMarker{
         Transform2DComp transform2DComp = transform2d.get(entityId);
         PhysicComp physicComp = physics.get(entityId);
         transform2DComp.rotation = transform2DComp.rotation + (physicComp.rotationSpeed * delta);
-        transform2DComp.position.add(physicComp.velocity.x * delta, physicComp.velocity.y * delta);
+        transform2DComp.position.add(physicComp.velocity.x * physicComp.speed * delta, physicComp.velocity.y * physicComp.speed * delta);
     }
 }

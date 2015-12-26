@@ -1,10 +1,8 @@
 package net.corpwar.game.libgdxjam;
 
 import com.artemis.*;
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,17 +10,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import net.corpwar.game.libgdxjam.components.*;
 import net.corpwar.game.libgdxjam.screens.GameScreen;
+import net.corpwar.game.libgdxjam.screens.LoadScreen;
 import net.corpwar.game.libgdxjam.screens.SplashScreen;
-import net.corpwar.game.libgdxjam.systems.GameLoopSystemInvocationStrategy;
-import net.corpwar.game.libgdxjam.systems.InputSystem;
-import net.corpwar.game.libgdxjam.systems.PhysicsSystem;
-import net.corpwar.game.libgdxjam.systems.SortedRenderSystem;
+import net.corpwar.game.libgdxjam.systems.*;
 
 public class LibGDXJamSpace extends Game {
 
@@ -38,9 +34,11 @@ public class LibGDXJamSpace extends Game {
 
 	// Arthemis gameworld
 	public World arthWorld;
+	private float logicFPS = 20;
 
 	// Screens
 	public SplashScreen splashScreen;
+	public LoadScreen loadScreen;
 	public GameScreen gameScreen;
 
 	// Handle all assets
@@ -52,6 +50,7 @@ public class LibGDXJamSpace extends Game {
 
 		// create all screens
 		splashScreen = new SplashScreen(this);
+		loadScreen = new LoadScreen(this);
 		gameScreen = new GameScreen(this);
 
 		// Create camera
@@ -63,9 +62,9 @@ public class LibGDXJamSpace extends Game {
 		batch = new SpriteBatch();
 
 		WorldConfiguration config = new WorldConfigurationBuilder()
-				.with(new SortedRenderSystem(this), new PhysicsSystem(20), new InputSystem(this, 20))
+				.with(new SortedRenderSystem(this), new PhysicsSystem(logicFPS), new InputSystem(this, logicFPS), new AISystem())
 				//.with(new RenderSys(), new EditingSys(), new ScriptSys())
-				.register(new GameLoopSystemInvocationStrategy(20))
+				.register(new GameLoopSystemInvocationStrategy(logicFPS))
 				.build();
 		arthWorld = new World(config);
 		setScreen(splashScreen);
@@ -91,9 +90,18 @@ public class LibGDXJamSpace extends Game {
 		Entity defaultSprite = arthWorld.createEntity();
 		defaultSprite.edit()
 				.add(new Transform2DComp(new Vector2(0,0), 1, new Vector2(1,1), 0))
-				.add(new TextureComp(new Sprite(new Texture("badlogic.jpg"))))
+				.add(new TextureComp(new Sprite(new Texture("ships/ship1.png"))))
 				.add(new PhysicComp())
 				.add(new InputComp())
-				.add(new ShipComp(100, 100, false));
+				.add(new ShipComp(300, 300, false));
+
+		Entity aiShip = arthWorld.createEntity();
+		aiShip.edit()
+				.add(new Transform2DComp(new Vector2(400,400), 1, new Vector2(1f,1f), 0))
+				.add(new TextureComp(new Sprite(new Texture("ships/ship2.png"))))
+				.add(new PhysicComp())
+				.add(new AIComp())
+				.add(new ShipComp(200, 200, false));
+		aiShip.getComponent(PhysicComp.class).speed = aiShip.getComponent(ShipComp.class).maxSpeed;
 	}
 }
