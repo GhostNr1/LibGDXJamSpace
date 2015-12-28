@@ -22,7 +22,7 @@ public class GameLoopSystemInvocationStrategy extends SystemInvocationStrategy {
     private boolean systemsSorted = false;
 
     public GameLoopSystemInvocationStrategy(float logicFPS) {
-        timeToProgress = 1 / logicFPS;
+        timeToProgress = logicFPS;
         logicMarkedSystems = new Array<BaseSystem>();
         otherSystems = new Array<BaseSystem>();
     }
@@ -45,6 +45,7 @@ public class GameLoopSystemInvocationStrategy extends SystemInvocationStrategy {
             accumulator -= timeToProgress;
             simAccumulator = 0;
         }
+        world.setDelta(accumulator);
         for (int i = 0; i < otherSystems.size; i++) {
             /**
              * Use the kept state from the logic above and interpolate with the current state within your render systems.

@@ -36,7 +36,7 @@ public class AISystem extends IteratingSystem implements LogicRenderMarker {
         Entity ep = world.getEntity(entityId);
         Entity toShip = null;
         for (int i = es.getEntities().size() - 1; i >= 0; i--) {
-            Entity e = world.getEntity(i);
+            Entity e = world.getEntity(es.getEntities().get(i));
             if (e.getId() != entityId) {
                 float distance = e.getComponent(Transform2DComp.class).position.dst(ep.getComponent(Transform2DComp.class).position);
                 if (closestShip == -1 || distance < closestShip) {

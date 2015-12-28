@@ -19,7 +19,7 @@ public class PhysicsSystem extends IteratingSystem implements LogicRenderMarker{
 
     public PhysicsSystem(float logicFPS) {
         super(Aspect.all(Transform2DComp.class, PhysicComp.class));
-        delta = 1 / logicFPS;
+        delta = logicFPS;
     }
 
     @Override

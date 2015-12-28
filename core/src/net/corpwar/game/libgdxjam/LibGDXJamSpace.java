@@ -34,7 +34,7 @@ public class LibGDXJamSpace extends Game {
 
 	// Arthemis gameworld
 	public World arthWorld;
-	private float logicFPS = 20;
+	private float logicFPS = 1f / 20f;
 
 	// Screens
 	public SplashScreen splashScreen;
@@ -62,8 +62,11 @@ public class LibGDXJamSpace extends Game {
 		batch = new SpriteBatch();
 
 		WorldConfiguration config = new WorldConfigurationBuilder()
-				.with(new SortedRenderSystem(this), new PhysicsSystem(logicFPS), new InputSystem(this, logicFPS), new AISystem())
-				//.with(new RenderSys(), new EditingSys(), new ScriptSys())
+				.with(new SortedRenderSystem(this),
+						new PhysicsSystem(logicFPS),
+						new InputSystem(this, logicFPS),
+						new AISystem(),
+						new WeaponSystem(logicFPS))
 				.register(new GameLoopSystemInvocationStrategy(logicFPS))
 				.build();
 		arthWorld = new World(config);
@@ -93,7 +96,7 @@ public class LibGDXJamSpace extends Game {
 				.add(new TextureComp(new Sprite(new Texture("ships/ship1.png"))))
 				.add(new PhysicComp())
 				.add(new InputComp())
-				.add(new ShipComp(300, 300, false));
+				.add(new ShipComp(300, 300, false, 500));
 
 		Entity aiShip = arthWorld.createEntity();
 		aiShip.edit()
@@ -101,7 +104,7 @@ public class LibGDXJamSpace extends Game {
 				.add(new TextureComp(new Sprite(new Texture("ships/ship2.png"))))
 				.add(new PhysicComp())
 				.add(new AIComp())
-				.add(new ShipComp(200, 200, false));
+				.add(new ShipComp(200, 200, false, 500));
 		aiShip.getComponent(PhysicComp.class).speed = aiShip.getComponent(ShipComp.class).maxSpeed;
 	}
 }
